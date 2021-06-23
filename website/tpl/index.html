@@ -17,11 +17,18 @@
     <link rel="stylesheet" href="/static/css/glightbox.min.css">
     <link rel="stylesheet" href="/static/css/aos.css">
     <link rel="stylesheet" href="/static/css/style.css">
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function (){
+        var SessionID=localStorage.getItem("SessionID");
+        alert(SessionID);
+      });
+    </script>
   </head>
   <body>
   {{template "header" .}}
 
-		<section class="hero-wrap" style="background-image: url('/static/images/bg_1.jpg');">
+  <section class="hero-wrap" style="background-image: url('/static/images/bg_1.jpg');">
       <div class="overlay"></div>
       <div class="container">
         <div class="row no-gutters slider-text align-items-center">
