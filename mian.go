@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"courses-gin/router"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -16,11 +17,11 @@ func main() {
 	// 加载网站静态资源
 	r.StaticFS("/static", http.Dir("D:/go_progrem/courses-gin/website/static"))
 	r.LoadHTMLGlob("website/tpl/*")
-	r.GET("/index.html", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", gin.H{
-			"title": "标题测试",
-		})
-	})
+
+	// 加载路由
+	router.LoadRouter(r)
+
+	// 服务器配置
 	srv := &http.Server{
 		Addr:         ":80",
 		Handler:      r,

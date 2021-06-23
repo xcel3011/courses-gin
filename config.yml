@@ -1,0 +1,12 @@
+dbConn:
+  address: localhost:3306
+  user: root
+  password: 123456
+  dbName: course
+  maxIdleConns: 10
+  maxOpenConns: 100
+redisConn:
+  address: localhost:6379
+  idleTimeout: 5 #5秒
+  maxIdle: 500 #空闲最大连接数
+  maxActive: 1000 #最大连接数

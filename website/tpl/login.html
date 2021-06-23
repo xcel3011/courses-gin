@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+
+<head>
+    <title>登录</title>
+    <!-- Meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Gadget Sign Up Form Responsive Widget, Audio and Video players, Login Form Web Template, Flat Pricing Tables, Flat Drop-Downs, Sign-Up Web Templates, Flat Web Templates, Login Sign-up Responsive Web Template, Smartphone Compatible Web Template, Free Web Designs for Nokia, Samsung, LG, Sony Ericsson, Motorola Web Design"
+    />
+    <script>
+        addEventListener("load", function () { setTimeout(hideURLbar, 0); }, false); function hideURLbar() { window.scrollTo(0, 1); }
+    </script>
+    <!-- Meta tags -->
+    <!-- font-awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+    <!-- //font-awesome icons -->
+    <!--stylesheets-->
+    <link href="/static/css/style1.css" rel='stylesheet' type='text/css' media="all">
+    <!--//style sheet end here-->
+    <link href="//fonts.googleapis.com/css?family=Montserrat:300,400,500,600" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+<body>
+    <h1 class="error">Gadget Sign Up Form</h1>
+	<!---728x90--->
+    <div class="w3layouts-two-grids">
+	<!---728x90--->
+        <div class="mid-class">
+            <div class="img-right-side">
+                <h3>Manage Your Gadgets Account</h3>
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget Lorem ipsum dolor sit
+                    amet, consectetuer adipiscing elit. Aenean commodo ligula ege</p>
+                <img src="/static/images/b11.png" class="img-fluid" alt="">
+            </div>
+            <div class="txt-left-side">
+                <h2> 登录 </h2>
+                <form id="login_form" onsubmit="return false" action="##" >
+                    <div class="form-left-to-w3l">
+                        <span class="fa fa-user-o" aria-hidden="true"></span>
+                        <input type="text" name="account" placeholder=" 账号" required="">
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-left-to-w3l ">
+                        <span class="fa fa-lock" aria-hidden="true"></span>
+                        <input type="password" name="password" placeholder="密码" required="">
+                        <div class="clear"></div>
+                    </div>
+                    <div class="main-two-w3ls">
+                        <div class="left-side-forget">
+                            <input type="checkbox" class="checked">
+                            <span class="remenber-me">Remember me </span>
+                        </div>
+                        <div class="right-side-forget">
+                            <a href="#" class="for">忘记密码</a>
+                        </div>
+                    </div>
+                    <div></div>
+                    <div class="btnn">
+                        <button type="submit"  onclick="login()">登录 </button>
+                    </div>
+                </form>
+                <div></div>
+                <div class="w3layouts_more-buttn">
+                    <h3>还没有账号..?
+                        <a href="#">注册
+                        </a>
+                    </h3>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $.fn.serializeObject = function () {
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function () {
+                if (o[this.name] !== undefined) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+        };
+        function login() {
+            $.ajax({
+                //几个参数需要注意一下
+                type: "PUT",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                contentType:"application/json;charset=UTF-8",
+                url: "/v1/login" ,//url
+                changeOrigin: true,
+                data:JSON.stringify($('#login_form').serializeObject()),
+                success: function (result) {
+                    console.log(result);//打印服务端返回的数据(调试用)
+                    if (result.status!=="00000"){
+                        alert(result.message);
+                        return false
+                    }
+                    localStorage .setItem("SessionId",result.data)
+                    window.location.href = "/index.html"
+
+                },
+                error : function() {
+                    alert("请求失败失败");
+                    return false
+                }
+            });
+        }
+    </script>
+</body>
+
+
+
+</html>
