@@ -1,2 +1,2 @@
 # courses-gin
-## gin渲染htmldemo
+## gin渲染html
