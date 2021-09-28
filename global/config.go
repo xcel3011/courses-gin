@@ -9,7 +9,8 @@ import (
 type config struct {
 	// 日志路径
 	Log struct {
-		LogDir string `yaml:"logDir"`
+		LogDir   string `yaml:"logDir"`
+		LogLevel int    `yaml:"logLevel"`
 	} `yaml:"log"`
 	// 数据库连接
 	DBConn struct {
@@ -29,18 +30,22 @@ type config struct {
 	} `yaml:"redisConn"`
 }
 
-var Config *config
+var _config *config
 
 func init() {
-	Config = &config{}
+	_config = &config{}
 	configPath := flag.String("c", "./config.yml", "config path")
 	flag.Parse()
 	content, err := ioutil.ReadFile(*configPath)
 	if err != nil {
 		panic(err)
 	}
-	err = yaml.Unmarshal(content, Config)
+	err = yaml.Unmarshal(content, _config)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func GetConfig() *config {
+	return _config
 }

@@ -4,6 +4,7 @@ import (
 	"courses-gin/model/resp"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func respSuccess(data interface{}, c *gin.Context) {
@@ -12,8 +13,7 @@ func respSuccess(data interface{}, c *gin.Context) {
 		Message: "success",
 		Data:    data,
 	}
-	c.Set("baseResp", *baseResp)
-	c.Set("status", baseResp.Status)
+
 	c.JSON(http.StatusOK, baseResp)
 }
 func respError(status, message string, c *gin.Context) {
@@ -24,4 +24,9 @@ func respError(status, message string, c *gin.Context) {
 	c.Set("baseResp", *baseResp)
 	c.Set("status", baseResp.Status)
 	c.JSON(http.StatusOK, baseResp)
+}
+
+func getUserId(c *gin.Context) uint {
+	parseUint, _ := strconv.ParseUint(c.GetHeader("uid"), 10, 64)
+	return uint(parseUint)
 }

@@ -7,28 +7,24 @@ import (
 	"courses-gin/util"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
-	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
-	"log"
 	"strings"
 	"time"
 )
 
-// 注册
+// SignUp 注册
 func SignUp(c *gin.Context) {
-	req := req.SignUp{}
-
 	// 绑定参数
-	err := c.ShouldBindWith(&req, binding.JSON)
+	signUpReq := req.SignUp{}
+	err := c.ShouldBindJSON(&signUpReq)
 	if err != nil {
-		log.Println("bind param", err)
+		global.Error("bind param", err)
 		respError("20000", "参数校验失败", c)
 		return
 	}
 
 	// 判断账号是否注册
-	num, err := dao.CountUserByAccount(req.Account)
+	num, err := dao.CountUserByAccount(signUpReq.Account)
 	if err != nil {
 		respError("30000", "注册失败", c)
 		return
@@ -40,8 +36,8 @@ func SignUp(c *gin.Context) {
 
 	// 注册流程
 	salt := util.GetRandomSalt()
-	password := util.EncryptPassword(req.Password, salt)
-	err = dao.CreateStudent(req.Account, password, salt)
+	password := util.EncryptPassword(signUpReq.Password, salt)
+	err = dao.CreateStudent(signUpReq.Account, password, salt)
 	if err != nil {
 		respError("30000", "注册失败", c)
 		return
@@ -49,41 +45,77 @@ func SignUp(c *gin.Context) {
 	respSuccess(nil, c)
 }
 
-// 登录
+// Login 登录
 func Login(c *gin.Context) {
-	req := req.Login{}
+	loginReq := req.Login{}
 
 	// 绑定参数
-	err := c.ShouldBindWith(&req, binding.JSON)
+	err := c.ShouldBindJSON(&loginReq)
 	if err != nil {
-		log.Println("bind param", err)
+		global.Error("bind param", err)
 		respError("20000", "参数校验失败", c)
 		return
 	}
 
 	// 查询用户
-	user, err := dao.QueryUserByAccount(req.Account)
+	user, err := dao.QueryUserByAccount(loginReq.Account)
 	if err != nil {
-		if gorm.IsRecordNotFoundError(err) {
-			respError("30000", "账号不存在", c)
-			return
-		}
 		respError("30000", "登录失败", c)
 		return
 	}
 
 	// 校验密码是否正确
-	encryptPassword := util.EncryptPassword(req.Password, user.Salt)
+	encryptPassword := util.EncryptPassword(loginReq.Password, user.Salt)
 	if strings.Compare(encryptPassword, user.Password) != 0 {
 		respError("20000", "密码错误", c)
 	}
 
 	// 生成sessionID
 	sessionId := uuid.NewV4().String()
-	err = global.RedisSetEX(fmt.Sprintf("course_%s", req.Account), sessionId, time.Hour)
+	err = global.RedisSetEX(fmt.Sprintf("session_%s", sessionId), loginReq.Account, time.Hour)
 	if err != nil {
 		respError("30000", "登录失败", c)
 		return
 	}
 	respSuccess(sessionId, c)
+}
+
+// DeleteUser 删除用户
+func DeleteUser(c *gin.Context) {
+	deleteReq := req.DeleteUser{}
+	if err := c.ShouldBindUri(&deleteReq); err != nil {
+		global.Error("bind param", err)
+		respError("20000", "参数校验失败", c)
+		return
+	}
+	if err := dao.DeleteUserByAccount(deleteReq.Account); err != nil {
+		respError("30000", "删除用户失败", c)
+		return
+	}
+	respSuccess(nil, c)
+}
+
+// UpdateUserInfo 编辑用户信息
+func UpdateUserInfo(c *gin.Context) {
+	// 校验用户id
+	account := c.Param("account")
+	_, err := dao.QueryUserByAccount(account)
+	if err != nil {
+		respError("30000", "查询用户失败", c)
+		return
+	}
+
+	// 绑定参数
+	userInfo := req.EditUserInfo{}
+	if err := c.ShouldBindJSON(&userInfo); err != nil {
+		global.Error("bind param", err)
+		respError("20000", "参数校验失败", c)
+		return
+	}
+
+	if err := dao.UpdateUserByAccount(dao.User{Account: account, Name: userInfo.Name}); err != nil {
+		respError("30000", "更新失败", c)
+		return
+	}
+	respSuccess(nil, c)
 }

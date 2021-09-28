@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// 生成盐值
+// GetRandomSalt 生成盐值
 func GetRandomSalt() string {
 	return strings.ReplaceAll(uuid.NewV4().String(), "-", "")
 }

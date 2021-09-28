@@ -10,11 +10,11 @@ var pool *redis.Pool
 
 func init() {
 	dial := func() (redis.Conn, error) {
-		c, err := redis.Dial("tcp", Config.RedisConn.Address)
+		c, err := redis.Dial("tcp", _config.RedisConn.Address)
 		if err != nil {
 			return nil, err
 		}
-		if Config.RedisConn.Password != "" {
+		if _config.RedisConn.Password != "" {
 			if _, err := c.Do("AUTH", "password01!"); err != nil {
 				c.Close()
 				return nil, err
@@ -24,9 +24,9 @@ func init() {
 	}
 	pool = &redis.Pool{
 		Dial:        dial,
-		IdleTimeout: time.Duration(Config.RedisConn.IdleTimeout) * time.Second,
-		MaxIdle:     Config.RedisConn.MaxIdle,
-		MaxActive:   Config.RedisConn.MaxActive,
+		IdleTimeout: time.Duration(_config.RedisConn.IdleTimeout) * time.Second,
+		MaxIdle:     _config.RedisConn.MaxIdle,
+		MaxActive:   _config.RedisConn.MaxActive,
 		Wait:        true,
 	}
 }

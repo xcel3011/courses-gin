@@ -1,24 +1,36 @@
 package router
 
 import (
+	"courses-gin/global"
+	"courses-gin/model/resp"
+	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
+// Cors 跨域
 func Cors() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		method := c.Request.Method
-		c.Header("Access-Control-Allow-Origin", "*")
-		c.Header("Access-Control-Allow-Headers", "Content-Type, AccessToken, X-CSRF-Token, Authorization, X-HY-UID, X-HY-Token, Experience-CurTime")
-		c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-		c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-		c.Header("Access-Control-Allow-Credentials", "true")
+	return cors.New(cors.Config{
+		AllowAllOrigins: true,
+		AllowHeaders:    []string{"Content-Type", "SessionID"},
+		AllowMethods:    []string{http.MethodPost, http.MethodGet, http.MethodPut, http.MethodDelete, http.MethodPatch, http.MethodOptions},
+		ExposeHeaders:   []string{"Content-Length", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Content-Type"},
+		MaxAge:          time.Hour,
+	})
+}
 
-		//放行所有OPTIONS方法
-		if method == "OPTIONS" {
-			c.AbortWithStatus(http.StatusNoContent)
+// PermissionMiddleWare 校验session
+func PermissionMiddleWare() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		sessionId := c.GetHeader("SessionID")
+		isExist, account, err := global.RedisGet(fmt.Sprintf("session_%s", sessionId))
+		if err != nil || !isExist {
+			c.AbortWithStatusJSON(http.StatusForbidden, resp.BaseResponse{Status: "10000", Message: "用户未登录"})
+			return
 		}
-		// 处理请求
+		c.Request.Header.Set("uid", account)
 		c.Next()
 	}
 }

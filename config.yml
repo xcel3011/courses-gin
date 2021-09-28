@@ -10,3 +10,5 @@ redisConn:
   idleTimeout: 5 #5秒
   maxIdle: 500 #空闲最大连接数
   maxActive: 1000 #最大连接数
+log:
+  logDir: ./logs
