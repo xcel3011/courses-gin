@@ -5,11 +5,24 @@ import (
 	"courses-gin/model/dao"
 	"courses-gin/model/req"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 // GetAllCoursesList 获取课程列表
 func GetAllCoursesList(c *gin.Context) {
-
+	coursesReq := req.PageInfo{PageIndex: 1, PageSize: 9}
+	if err := c.ShouldBindQuery(&coursesReq); err != nil {
+		global.Error("bind param", err)
+		respError("20000", "参数校验失败", c)
+		return
+	}
+	count, courses, err := dao.QueryAllCourses(coursesReq)
+	if err != nil {
+		global.Error("bind param", err)
+		respError("20000", "参数校验失败", c)
+		return
+	}
+	c.HTML(http.StatusOK, "courses.html", gin.H{"count": count, "courses": courses})
 }
 
 // CreateCourse 创建课程
@@ -47,5 +60,4 @@ func CreateCourse(c *gin.Context) {
 		respError("30000", "创建课程失败", c)
 		return
 	}
-
 }

@@ -27,7 +27,27 @@
   </head>
   <body>
   {{template "header" .}}
-
+  <nav class="navbar navbar-expand-lg  ftco-navbar-light">
+    <div class="container-xl">
+      <!-- <a class="navbar-brand align-items-center" href="index.html">
+          Academia
+      </a> -->
+      <a href="login.html" class="btn-custom order-lg-last">登录</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="fa fa-bars"></span> Menu
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="index.html">主页</a></li>
+          <li class="nav-item"><a class="nav-link" href="/v1/course/courses">所有课程</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">关于</a></li>
+          <li class="nav-item"><a class="nav-link" href="team.html">团队</a></li>
+          <li class="nav-item"><a class="nav-link" href="blog.html">博客</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">联系我们</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
   <section class="hero-wrap" style="background-image: url('/static/images/bg_1.jpg');">
       <div class="overlay"></div>
       <div class="container">

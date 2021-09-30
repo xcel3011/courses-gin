@@ -33,10 +33,10 @@ func LoadRouter(router *gin.Engine) {
 
 		// 课程
 		course := v1.Group("/course")
-		course.Use(PermissionMiddleWare())
+		//course.Use(PermissionMiddleWare())
 		{
 			course.POST("/", controller.CreateCourse)            // 创建课程
-			course.GET("/courses", controller.GetAllCoursesList) // 获取所有课程
+			router.GET("/courses", controller.GetAllCoursesList) // 获取所有课程
 		}
 	}
 }
